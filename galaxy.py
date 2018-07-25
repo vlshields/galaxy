@@ -3,7 +3,7 @@ import numpy as np
 import statsmodels.formula.api as sm
 
 def get_data():
-    data = pd.read_csv('/Users/vincentshields/Desktop/hello/output.csv')
+    data = pd.read_csv('test_data.csv')
     data['college'] = data['educ_cat'] > 3
     return data
 
