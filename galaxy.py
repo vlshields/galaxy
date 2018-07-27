@@ -44,30 +44,75 @@ def galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
             else:
                 reglist3.append(str(round(reg3.params[i],3)) + '.')
     names.append(table_name)
-    print("""
+    
+    if reg2 and reg3:
+        
+        print("""
 
 
-                        {3}
--------------------------------------------------------
-{0}                        {1}                   {2}
+                            {3}
+--------------------------------------------------------------
+    {0}                        {1}                   {2}
 
-        """.format(*names))
+            """.format(*names))
 
-    for i in list(range(len(reglist1))):
-        print("""{}: {}\n {}""".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
-    print()
+        for i in list(range(len(reglist1))):
+            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
 
-    for i in list(range(len(reglist2))):
-        print("""             {}: {}\n                      {}""".format(reg2.params.index[i],reglist2[i],round(reg2.bse[i],4)))
+        for i in list(range(len(reglist2))):
+            print("\t\t\t{}: {}\f\b\b\b\b\b\b{}\n".format(reg2.params.index[i],reglist2[i],round(reg2.bse[i],4)))
 
-    for i in list(range(len(reglist3))):
-        print("""                                  {}: {}\n                                   {}""".format(reg3.params.index[i],reglist3[i],round(reg3.bse[i],4)))
+        for i in list(range(len(reglist3))):
+            print("\t\t\t\t\t\t{}: {}\f\b\b\b\b\b\b{}\n".format(reg3.params.index[i],reglist3[i],round(reg3.bse[i],4)))
 
-    print("""
-------------------------------------------------------
-|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
-------------------------------------------------------
-          """)
+        print("""
+----------------------------------------------------------
+    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
+----------------------------------------------------------
+              """)
+    
+    elif reg2 and reg3 == None:
+
+        print("""
+
+
+                            {2}
+    -------------------------------------------------------
+    {0}                        {1}                   
+
+            """.format(*names))
+
+        for i in list(range(len(reglist1))):
+            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
+        
+
+        for i in list(range(len(reglist2))):
+            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg2.params.index[i],reglist2[i],round(reg2.bse[i],4)))
+
+        print("""
+    ------------------------------------------------------
+    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
+    ------------------------------------------------------
+              """)
+    elif not reg2 and not reg3:
+        print("""
+
+
+                            {1}
+    -------------------------------------------------------
+    {0}                                         
+
+            """.format(*names))
+
+        for i in list(range(len(reglist1))):
+            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
+        
+
+        print("""
+    ------------------------------------------------------
+    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
+    ------------------------------------------------------
+              """)
 
 def main():
     
@@ -77,7 +122,7 @@ def main():
     reg2 = sm.ols('ppvt~momage + educ_cat', data = data).fit()
     reg3 = sm.ols('ppvt~momage + educ_cat + college + momage:college', data = data).fit()
 
-    galaxy(reg1,reg2,reg3, 'Table 1',['reg1', 'reg2', 'reg3'])
+    galaxy(reg1,reg2,reg3,'Table 1',['reg1','reg2','reg3'])
 
 
 if __name__ == '__main__':
