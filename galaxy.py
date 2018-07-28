@@ -7,6 +7,14 @@ def get_data():
     data['college'] = data['educ_cat'] > 3
     return data
 
+def get_ending(pvalue):
+    if pvalue <= 0.01:
+        return '***'
+    elif 0.05 >= pvalue > 0.01:
+        return '**'
+    elif 0.1 >= pvalues > 0.05:
+        return 
+
 
 
 def galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
@@ -43,35 +51,50 @@ def galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
                 reglist3.append(str(round(reg3.params[i],3)) + '*')
             else:
                 reglist3.append(str(round(reg3.params[i],3)) + '.')
+    
     names.append(table_name)
+    bottom = """
+-----------------------------------------------------------
+|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
+-----------------------------------------------------------
+              """
+
     
     if reg2 and reg3:
-        
-        print("""
 
-
-                            {3}
---------------------------------------------------------------
-    {0}                        {1}                   {2}
-
-            """.format(*names))
+        print('{:-^60}\n{:<}{:>25}{:>35}\n'.format(names[3],names[0],names[1],names[2]))
 
         for i in list(range(len(reglist1))):
-            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
+
+            if '[T.True]' in str(reg1.params.index[i]):
+                index = str(reg1.params.index[i]).strip('[T.True]')
+            else:
+                index = reg1.params.index[i]
+
+            print("{:<}: {}\n{:>15}\n".format(index,reglist1[i],'('+str(round(reg1.bse[i],4))+')'))
 
         for i in list(range(len(reglist2))):
-            print("\t\t\t{}: {}\f\b\b\b\b\b\b{}\n".format(reg2.params.index[i],reglist2[i],round(reg2.bse[i],4)))
+
+            if '[T.True]' in str(reg2.params.index[i]):
+                index = str(reg2.params.index[i]).strip('[T.True]')
+            else:
+                index = reg2.params.index[i]
+
+            print("{:<}: {:>25}\n{:>35}\n".format(index,reglist2[i],'('+str(round(reg2.bse[i],4))+')'))
 
         for i in list(range(len(reglist3))):
-            print("\t\t\t\t\t\t{}: {}\f\b\b\b\b\b\b{}\n".format(reg3.params.index[i],reglist3[i],round(reg3.bse[i],4)))
+            index = str(reg3.params.index[i])
 
-        print("""
-----------------------------------------------------------
-    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
-----------------------------------------------------------
-              """)
+            if '[T.True]' in index:
+                index = index.strip('[T.True]')
+            else:
+                index = reg3.params.index[i]
+
+            print("{:<}: {:>50}\n{:>55}\n".format(index,reglist3[i],'('+str(round(reg3.bse[i],4))+')'))
+
+        print('{:<}'.format(bottom))
     
-    elif reg2 and reg3 == None:
+    elif reg2 and not reg3:
 
         print("""
 
@@ -90,29 +113,20 @@ def galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
             print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg2.params.index[i],reglist2[i],round(reg2.bse[i],4)))
 
         print("""
-    ------------------------------------------------------
+------------------------------------------------------
     |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
     ------------------------------------------------------
               """)
     elif not reg2 and not reg3:
-        print("""
-
-
-                            {1}
-    -------------------------------------------------------
-    {0}                                         
-
-            """.format(*names))
+        print('{:-^60}\n{:<}\n'.format(names[1],names[0]))
 
         for i in list(range(len(reglist1))):
-            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
+            print("{:<}: {}\n{:>15}\n".format(reg1.params.index[i],reglist1[i],'('+str(round(reg1.bse[i],4))+')'))
+        
+        print('{:<}'.format(bottom))
         
 
-        print("""
-    ------------------------------------------------------
-    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
-    ------------------------------------------------------
-              """)
+   
 
 def main():
     
