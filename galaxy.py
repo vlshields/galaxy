@@ -3,127 +3,129 @@ import numpy as np
 import statsmodels.formula.api as sm
 
 def get_data():
+    
     data = pd.read_csv('test_data.csv')
     data['college'] = data['educ_cat'] > 3
     return data
 
 def get_ending(pvalue):
+    
     if pvalue <= 0.01:
         return '***'
     elif 0.05 >= pvalue > 0.01:
         return '**'
-    elif 0.1 >= pvalues > 0.05:
-        return 
+    elif 0.1 >= pvalue > 0.05:
+        return '*'
+    else:
+        return '.'
+
+def clean_boolean(index):
+    
+    if '[T.True]' in str(index):
+        return str(index.strip('[T.True]'))
+    else:
+        return index
+
+def reg3format(index,param,se):
+
+    if len(index) > 12:
+        print("{:<}: {:>60}\n{:>75}\n".format(index,param,'('+str(round(se,4))+')'))
+    else:
+        print("{:<}: {:>65}\n{:>75}\n".format(index,param,'('+str(round(se,4))+')'))
+
+def reg2format(index,param,se):
+
+    if len(index) > 12:
+        print("{:<}: {:>40}\n{:>55}\n".format(index,param,'('+str(round(se,4))+')'))
+    else:
+        print("{:<}: {:>45}\n{:>55}\n".format(index,param,'('+str(round(se,4))+')'))
+
+def reg1format(index,param,se):
+
+    if len(index) > 12:
+        print("{:<}: {:>20}\n{:>35}\n".format(index,param,'('+str(round(se,4))+')'))
+    else:
+        print("{:<}: {:>25}\n{:>35}\n".format(index,param,'('+str(round(se,4))+')'))
+
 
 
 
 def galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
-    
-    reglist1 = []
-    for i in list(range(len(reg1.pvalues))):
-        if reg1.pvalues[i] <= 0.01:
-            reglist1.append(str(round(reg1.params[i],3))+'***')
-        elif 0.05 >= reg1.pvalues[i] > 0.01:
-            reglist1.append(str(round(reg1.params[i],3)) + '**')
-        elif 0.1 >= reg1.pvalues[i] > 0.05:
-            reglist1.append(str(round(reg1.params[i],3)) + '*')
-        else:
-            reglist1.append(str(round(reg1.params[i],3)) + '.')
-    if reg2:
-        reglist2 = []
-        for i in list(range(len(reg2.pvalues))):
-            if reg2.pvalues[i] <= 0.01:
-                reglist2.append(str(round(reg2.params[i],3))+'***')
-            elif 0.05 >= reg2.pvalues[i] > 0.01:
-                reglist2.append(str(round(reg2.params[i],3)) + '**')
-            elif 0.1 >= reg2.pvalues[i] > 0.05:
-                reglist2.append(str(round(reg2.params[i],3)) + '*')
-            else:
-                reglist2.append(str(round(reg2.params[i],3)) + '.')
-    if reg3:
-        reglist3 = []
-        for i in list(range(len(reg3.pvalues))):
-            if reg3.pvalues[i] <= 0.01:
-                reglist3.append(str(round(reg3.params[i],3))+'***')
-            elif 0.05 >= reg3.pvalues[i] > 0.01:
-                reglist3.append(str(round(reg3.params[i],3)) + '**')
-            elif 0.1 >= reg3.pvalues[i] > 0.05:
-                reglist3.append(str(round(reg3.params[i],3)) + '*')
-            else:
-                reglist3.append(str(round(reg3.params[i],3)) + '.')
-    
-    names.append(table_name)
-    bottom = """
------------------------------------------------------------
-|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
------------------------------------------------------------
-              """
 
+    reglist1 = [
+'{:.3f}{}'.format(param, get_ending(pvalue)) for param,pvalue in zip(reg1.params,reg1.pvalues)
+    ]
+    
+  
+    if reg2:
+        reglist2 = [
+'{:.3f}{}'.format(param, get_ending(pvalue)) for param,pvalue in zip(reg2.params,reg2.pvalues)
+    ]
+    
+    if reg3:
+        reglist3 = [
+'{:.3f}{}'.format(param, get_ending(pvalue)) for param,pvalue in zip(reg3.params,reg3.pvalues)
+    ]
+    
+    bottom = "|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|"
+              
     
     if reg2 and reg3:
 
-        print('{:-^60}\n{:<}{:>25}{:>35}\n'.format(names[3],names[0],names[1],names[2]))
+        print('{:-^80}\n{:>35}{:>20}{:>20}'.format(table_name,names[0],names[1],names[2]))
+        print('{:-^80}\n'.format(''))
 
-        for i in list(range(len(reglist1))):
+        for index,param,se in zip(reg1.params.index,reglist1,reg1.bse):
 
-            if '[T.True]' in str(reg1.params.index[i]):
-                index = str(reg1.params.index[i]).strip('[T.True]')
-            else:
-                index = reg1.params.index[i]
+            index = clean_boolean(index)
+            reg1format(index,param,se)
 
-            print("{:<}: {}\n{:>15}\n".format(index,reglist1[i],'('+str(round(reg1.bse[i],4))+')'))
+        for index,param,se in zip(reg2.params.index,reglist2,reg2.bse):
 
-        for i in list(range(len(reglist2))):
+            index = clean_boolean(index)
+            reg2format(index,param,se)
+            
+        for index,param,se in zip(reg3.params.index,reglist3,reg3.bse):
 
-            if '[T.True]' in str(reg2.params.index[i]):
-                index = str(reg2.params.index[i]).strip('[T.True]')
-            else:
-                index = reg2.params.index[i]
-
-            print("{:<}: {:>25}\n{:>35}\n".format(index,reglist2[i],'('+str(round(reg2.bse[i],4))+')'))
-
-        for i in list(range(len(reglist3))):
-            index = str(reg3.params.index[i])
-
-            if '[T.True]' in index:
-                index = index.strip('[T.True]')
-            else:
-                index = reg3.params.index[i]
-
-            print("{:<}: {:>50}\n{:>55}\n".format(index,reglist3[i],'('+str(round(reg3.bse[i],4))+')'))
-
-        print('{:<}'.format(bottom))
+            index = clean_boolean(index)
+            reg3format(index,param,se)
+        
+        print('{:-^80}'.format(''))
+        print('{:^80}'.format(bottom))
+        print('{:-^80}'.format(''))
     
     elif reg2 and not reg3:
 
-        print("""
+        print('{:-^80}\n{:>35}{:>20}'.format(table_name,names[0],names[1]))
+        print('{:-^80}\n'.format(''))
 
+        for index,param,se in zip(reg1.params.index,reglist1,reg1.bse):
 
-                            {2}
-    -------------------------------------------------------
-    {0}                        {1}                   
+            index = clean_boolean(index)
+            reg1format(index,param,se)
 
-            """.format(*names))
+        for index,param,se in zip(reg2.params.index,reglist2,reg2.bse):
 
-        for i in list(range(len(reglist1))):
-            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg1.params.index[i],reglist1[i],round(reg1.bse[i],4)))
-        
-
-        for i in list(range(len(reglist2))):
-            print("\t\b\b\b\b{}: {}\f\b\b\b\b\b\b{}\n".format(reg2.params.index[i],reglist2[i],round(reg2.bse[i],4)))
-
-        print("""
-------------------------------------------------------
-    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|
-    ------------------------------------------------------
-              """)
+            index = clean_boolean(index)
+            reg2format(index,param,se)
+            
+        print('{:-^80}'.format(''))
+        print('{:^80}'.format(bottom))
+        print('{:-^80}'.format(''))
+    
     elif not reg2 and not reg3:
-        print('{:-^60}\n{:<}\n'.format(names[1],names[0]))
 
-        for i in list(range(len(reglist1))):
-            print("{:<}: {}\n{:>15}\n".format(reg1.params.index[i],reglist1[i],'('+str(round(reg1.bse[i],4))+')'))
+        print('{:-^80}\n{:>35}'.format(table_name,names[0]))
+        print('{:-^80}\n'.format(''))
+
+        for index,param,se in zip(reg1.params.index,reglist1,reg1.bse):
+
+            index = clean_boolean(index)
+            reg1format(index,param,se)
         
-        print('{:<}'.format(bottom))
+        print('{:-^80}'.format(''))
+        print('{:^80}'.format(bottom))
+        print('{:-^80}'.format(''))
         
 
    
@@ -136,7 +138,7 @@ def main():
     reg2 = sm.ols('ppvt~momage + educ_cat', data = data).fit()
     reg3 = sm.ols('ppvt~momage + educ_cat + college + momage:college', data = data).fit()
 
-    galaxy(reg1,reg2,reg3,'Table 1',['reg1','reg2','reg3'])
+    galaxy(reg1, reg2,reg3, table_name='Table 1',names=['reg1','reg2','reg3'])
 
 
 if __name__ == '__main__':
