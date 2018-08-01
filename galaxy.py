@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import statsmodels.formula.api as sm
 
+"""A way to print pretty regression tables in python. Useful for econometrics
+and social research."""
+
 def get_data():
     
     data = pd.read_csv('test_data.csv')
@@ -50,7 +53,9 @@ def reg1format(index,param,se):
 
 
 
-def galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
+def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
+
+    """a function to print out a nice-looking regression table"""
 
     reglist1 = [
 '{:.3f}{}'.format(param, get_ending(pvalue)) for param,pvalue in zip(reg1.params,reg1.pvalues)
