@@ -67,7 +67,7 @@ Galaxy(model, table_name='Example Table 1', names = ['one input'])
 
 
 ```python
-data['college'] = data['educ_cat'] > 3 # Galaxy will automatically strip the [T.True] when greating a boolean
+data['college'] = data['educ_cat'] > 3 # Galaxy will automatically strip the [T.True] when creating a boolean
 
 model = ols('ppvt~momage', data=data).fit()
 model2 = ols('ppvt~momage + educ_cat', data = data).fit()
@@ -114,8 +114,3 @@ Galaxy(model,model2,model3, table_name='Example Table 2', names = ['one input', 
                    |p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|                
     --------------------------------------------------------------------------------
 
-
-
-```python
-
-```
