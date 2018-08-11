@@ -50,8 +50,64 @@ def reg1format(index,param,se):
     else:
         print("{:<}: {:>25}\n{:>35}\n".format(index,param,'('+str(round(se,4))+')'))
 
+def bottom3(reg1,reg2,reg3):
 
+    ps = "|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|"
+    
+    print('{:-^80}'.format(''))
+    print('{:^80}'.format(ps))
+    print('{:-^80}'.format(''))
 
+    print("{:<}: {:>22}{:>20}{:>20}".format('Observations',round(reg1.nobs),
+        round(reg2.nobs), round(reg3.nobs)))
+
+    print("{:<}: {:>25}{:>20}{:>20}".format('R squared',round(reg1.rsquared,3),
+        round(reg2.rsquared,3), round(reg3.rsquared,3)))
+
+    print("{:<}: {:>20}{:>21}{:>20}".format('Adj. Rsquared',round(reg1.rsquared_adj,3),
+        round(reg2.rsquared_adj,3), round(reg3.rsquared_adj,3)))
+    
+    print('{:<}: {:>27}{}{:>18}{}{:>18}{}'.format('F Stat',round(reg1.fvalue,3),get_ending(reg1.f_pvalue),
+        round(reg2.fvalue,3),get_ending(reg2.f_pvalue),round(reg3.fvalue,3),get_ending(reg3.f_pvalue)))
+    print('{:-^80}'.format(''))
+
+def bottom2(reg1,reg2):
+
+    ps = "|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|"
+    
+    print('{:-^80}'.format(''))
+    print('{:^80}'.format(ps))
+    print('{:-^80}'.format(''))
+
+    print("{:<}: {:>22}{:>20}".format('Observations',round(reg1.nobs),
+        round(reg2.nobs)))
+
+    print("{:<}: {:>25}{:>20}".format('R squared',round(reg1.rsquared,3),
+        round(reg2.rsquared,3)))
+
+    print("{:<}: {:>20}{:>21}".format('Adj. Rsquared',round(reg1.rsquared_adj,3),
+        round(reg2.rsquared_adj,3)))
+
+    print('{:<}: {:>27}{}{:>18}{}'.format('F Stat',round(reg1.fvalue,3),get_ending(reg1.f_pvalue),
+        round(reg2.fvalue,3),get_ending(reg2.f_pvalue)))
+    print('{:-^80}'.format(''))
+
+def bottom(reg1):
+
+    ps = "|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|"
+    
+    print('{:-^80}'.format(''))
+    print('{:^80}'.format(ps))
+    print('{:-^80}'.format(''))
+
+    print("{:<}: {:>22}".format('Observations',round(reg1.nobs)))
+
+    print("{:<}: {:>25}".format('R squared',round(reg1.rsquared,3)))
+
+    print("{:<}: {:>20}".format('Adj. Rsquared',round(reg1.rsquared_adj,3)))
+
+    print('{:<}: {:>27}{}'.format('F Stat',round(reg1.fvalue,3),get_ending(reg1.f_pvalue)))
+    print('{:-^80}'.format(''))
 
 def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
 
@@ -71,9 +127,7 @@ def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
         reglist3 = [
 '{:.3f}{}'.format(param, get_ending(pvalue)) for param,pvalue in zip(reg3.params,reg3.pvalues)
     ]
-    
-    bottom = "|p < 0.01 ***| p < 0.05 **| p < 0.1 *| p > 0.1 .|"
-              
+                
     
     if reg2 and reg3:
 
@@ -94,10 +148,10 @@ def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
 
             index = clean_boolean(index)
             reg3format(index,param,se)
+
+        bottom3(reg1,reg2,reg3)
         
-        print('{:-^80}'.format(''))
-        print('{:^80}'.format(bottom))
-        print('{:-^80}'.format(''))
+        
     
     elif reg2 and not reg3:
 
@@ -114,9 +168,7 @@ def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
             index = clean_boolean(index)
             reg2format(index,param,se)
             
-        print('{:-^80}'.format(''))
-        print('{:^80}'.format(bottom))
-        print('{:-^80}'.format(''))
+        bottom2(reg1,reg2)
     
     elif not reg2 and not reg3:
 
@@ -128,12 +180,8 @@ def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=None):
             index = clean_boolean(index)
             reg1format(index,param,se)
         
-        print('{:-^80}'.format(''))
-        print('{:^80}'.format(bottom))
-        print('{:-^80}'.format(''))
-        
-
-   
+        bottom(reg1)
+           
 
 def main():
     
@@ -143,7 +191,7 @@ def main():
     reg2 = sm.ols('ppvt~momage + educ_cat', data = data).fit()
     reg3 = sm.ols('ppvt~momage + educ_cat + college + momage:college', data = data).fit()
 
-    galaxy(reg1, reg2,reg3, table_name='Table 1',names=['reg1','reg2','reg3'])
+    Galaxy(reg1,reg2,table_name='Table 1',names=['reg1','reg2','reg3'])
 
 
 if __name__ == '__main__':
