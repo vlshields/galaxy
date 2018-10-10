@@ -124,3 +124,114 @@ Galaxy(model,model2,model3, table_name='Example Table 2', names = ['one input', 
     F Stat:                       4.926**             8.939***             4.808***
     --------------------------------------------------------------------------------
 
+
+#### Galaxydf
+
+You can also output your results in dataframe format with Galaxydf...
+
+
+```python
+from galaxy import Galaxydf
+from galaxy import get_data
+
+data = pd.read_csv('./galaxy/test_data.csv')
+data['college'] = data['educ_cat'] > 3
+
+reg1 = ols('ppvt~momage', data=data).fit()
+reg2 = ols('ppvt~momage + educ_cat', data = data).fit()
+reg3 = ols('ppvt~momage + educ_cat + college + momage:college', data = data).fit()
+
+Galaxydf(reg1,reg2,reg3,names=['reg1','reg2','reg3'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>reg1</th>
+      <th>reg2</th>
+      <th>reg3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Intercept</th>
+      <td>67.783***(8.688)</td>
+      <td>69.155***(8.571)</td>
+      <td>67.392***(9.178)</td>
+    </tr>
+    <tr>
+      <th>momage</th>
+      <td>0.840**(0.379)</td>
+      <td>0.343.(0.398)</td>
+      <td>56.438.(48.026)</td>
+    </tr>
+    <tr>
+      <th>educ_cat</th>
+      <td></td>
+      <td>4.711***(1.317)</td>
+      <td>0.442.(0.411)</td>
+    </tr>
+    <tr>
+      <th>college[T.True]</th>
+      <td></td>
+      <td></td>
+      <td>-2.162.(1.857)</td>
+    </tr>
+    <tr>
+      <th>momage:college[T.True]</th>
+      <td></td>
+      <td></td>
+      <td>4.461***(1.623)</td>
+    </tr>
+    <tr>
+      <th>Observations</th>
+      <td>400.000</td>
+      <td>400.000</td>
+      <td>400.000</td>
+    </tr>
+    <tr>
+      <th>Rsquared</th>
+      <td>0.012</td>
+      <td>0.043</td>
+      <td>0.046</td>
+    </tr>
+    <tr>
+      <th>Adj. Rsquared</th>
+      <td>0.010</td>
+      <td>0.038</td>
+      <td>0.037</td>
+    </tr>
+    <tr>
+      <th>Fstat</th>
+      <td>4.926**</td>
+      <td>8.939***</td>
+      <td>4.808***</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+
+```

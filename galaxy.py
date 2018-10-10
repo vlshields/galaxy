@@ -279,6 +279,8 @@ def Galaxy(reg1,reg2=None,reg3=None, table_name='Regression Table', names=['(1)'
 
 def Galaxydf(reg1,reg2=None,reg3=None, names=['(1)','(2)','(3)']):
 
+    """Returns results in a dataframe object"""
+
     df = pd.DataFrame()
     
 
