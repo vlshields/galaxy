@@ -162,8 +162,8 @@ def bottom3(reg1,reg2,reg3):
     print("{:<}: {:>20}{:>21}{:>20}".format('Adj. Rsquared',round(reg1.rsquared_adj,3),
         round(reg2.rsquared_adj,3), round(reg3.rsquared_adj,3)))
     try:
-        print('{:<}: {:>27}{}{:>18}{}{:>18}{}'.format('F Stat',round(reg1.fvalue,3),get_ending(reg1.f_pvalue),
-            round(reg2.fvalue,3),get_ending(reg2.f_pvalue),round(reg3.fvalue,3),get_ending(reg3.f_pvalue)))
+        print('{:<}: {:>27}{}{:>18}{}{:>18}{}'.format('F Stat',np.round(reg1.fvalue,3),get_ending(reg1.f_pvalue),
+            np.round(reg2.fvalue,3),get_ending(reg2.f_pvalue),np.round(reg3.fvalue,3),get_ending(reg3.f_pvalue)))
     except TypeError as e:
         print('{:<}: {:>27}{}{:>18}{}{:>18}{}'.format('F Stat',round(reg1.fvalue[0],3),get_ending(reg1.f_pvalue),
             round(reg2.fvalue[0],3),get_ending(reg2.f_pvalue),round(reg3.fvalue[0],3),get_ending(reg3.f_pvalue)))
